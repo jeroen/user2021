@@ -1,0 +1,1065 @@
+---
+title: "The R-universe project"
+subtitle: "UseR 2021"
+author: "Jeroen Ooms"
+date: "2021-07-09"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, 'custom.css']
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:10"
+---
+class: fullpage
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment=NA, fig.width=10, fig.height=5, dev.args=list(bg='transparent'))
+```
+
+
+class: fullpage
+
+# Research / software publishing for everyone !
+
+![website2](images/website2.png)
+
+???
+
+Welcome! This talk is about R-universe, which is a ambitious new platform by rOpenSci. 
+
+In the talk I will discuss some of the different components and use cases,
+
+but if you're going to take away one thing from this talk, it should be that r-universe is for everyone.
+
+It is a place for publishing research and research software, 
+it can be used by individuals or organizations.
+
+By novice R users, students, researchers, or professional package developers.
+
+There is no gate-keeping.
+If you have some R code or rmarkdown article that you think is worth sharing, 
+regardless of what it is, you can sign up and do that today.
+No matter your background or expertise.
+
+
+---
+class: fullpage
+
+# About me: the rOpenSci team
+
+![website2](images/ropensci-team.png)
+
+???
+
+A little bit about me.
+
+My name is Jeroen. I am a staff research engineer, and the lead infrastructure for rOpenSci.
+
+If you don't know rOpenSci: we are a research group based in UC Berkeley doing all sorts of things related to open science with R.
+
+If you want to learn more about rOpenSci, checkout the talk by Stefanie Butland earlier this week,
+who gives a great overview of our mission and various activities.
+
+---
+class: fullpage
+
+# CRAN Packages
+
+[![pkgscreen](images/packages2.png)](https://cran.r-project.org/web/checks/check_results_jeroen_at_berkeley.edu.html)
+
+???
+
+As part of my work with rOpenSci, I've written quite a few CRAN packages. 
+
+Mostly packages that interface to interesting C/C++ libraries that expose functionality to R that can be useful for researchers.
+For example packages providing http clients, cryptography, databases, image processing, and so on.
+
+
+
+---
+background-image: url(images/windows.png)
+background-position: 50% 50%
+
+# R-for-windows toolchains, installers, libraries
+
+???
+
+And finally I am the maintainer for the official installers, and toolchains, and system libraries for R on Windows.
+
+
+---
+class: fullpage
+
+# R-for-windows toolchains, installers, libraries
+
+![website2](images/r-windows.png)
+
+
+???
+
+In this role as Windows maintainer, I spent quite some time over the past few years modernizing the infrastructure to build R and the compilers and system libraries needed by R packages, collectively known as Rtools.
+
+This process is now entirely automated and transparent and reproducible, such that everyone can see how this works, and get involved. 
+
+And at the same time I tried to redesign Rtools to reduce friction for Windows users to develop R and packages on their machine. 
+
+So these days if you install Rtools4 and R, things should generally just work. Which wasn't always the case.
+
+If you are interested in this, check out the r-windows organization on GitHub.
+
+That's a bit of background about me. Let's talk about R-universe.
+
+---
+class: inverse, center, middle
+
+# What is R-universe?
+
+
+---
+
+# What is R-universe
+
+Experimenting with new ideas for _publishing_ and _discovering_  research / software in R, based on 10 years of rOpenSci experience:
+
+  - Personal CRAN-like repos
+  - Extensible build system based on git
+  - Live reproducible Rmd articles 
+  - Easily browsing research and software
+  - Dashboards
+  - API access
+  - Global feeds
+  - Software health metrics
+  - Dependency network analysis
+  - Finding software citations
+  - Etc
+  
+These ideas are still developing as things are taking shape.
+
+???
+
+R-universe is sort of an umbrella project, under which we are experimenting with many ideas that we have developed over the past years in rOpenSci, to take open-science with R to the next level.
+
+In essence, R-universe is an _open_ platform for publishing and discovering research and research software written in R.
+
+The platform has many features and components:
+
+In R-universe, everyone has a personal CRAN-like package repository, which is backed by a modern build system,
+which also allows you to publish automatically rendered Rmarkdown articles.
+
+And then on top of that, R-universe has extensive dashboards and feeds and apis and metrics, and so on, to make this content accessible and discoverable. 
+
+
+---
+
+# How it works (in a nutshell)
+
+Every organization or user has a unique domain for publishing their content.
+
+## `https://<user>.r-universe.dev`
+
+Where `<user>` is a GitHub account name (user or organization).
+
+On this domain you can find:
+
+
+???
+
+How does it work?
+
+In R-universe, every _user_ or _organization_ has a unique subdomain under r-universe.dev, for publishing their content.
+
+The subdomain is mapped to your github account name, so it can either be an individual account or an team account.
+
+For example, I publish personal content is under jeroen.r-universe.dev and rOpenSci content under ropensci.r-universe.dev.
+
+--
+
+ - __CRAN-like repo__ with any R packages + win/mac binaries
+ - Live rendered __Rmd articles__
+ - Programmable __API access__
+ - Interactive __dashboard__ for browsing and monitoring activity
+ - Everything is __fully automated__
+ - Metrics and other meta functionality (planned later 2021)
+ 
+The R-universe platform connects these different universes with each other, though global feeds, cross referencing maintainers, etc. A bit like GitHub! But for R :-)
+
+
+???
+
+On this domain you can find a cranlike repository with R packages owned by this user or organization. 
+
+These include binaries for Windows and MacOS, and all the other things you expect from a CRAN-like repository.
+
+You can also find all the Rmarkdown articles published by this user or organization, and a lot of meta-data.
+
+If you open the domain in a browser, you can browse the content visually using a dashboard, but the same data is also accessible programmatically using HTTP APIs. 
+
+And again, everything is fully automated, as we will see in a second.
+
+
+---
+class: inverse, center, middle
+
+# Example!
+
+---
+class: fullpage
+
+# Example: the ggseg universe
+
+![ggseg-builds](images/ggseg-builds.png)
+
+???
+
+Let's look at an example. 
+
+Here we see the `ggseg` universe.
+ggseg is suite of R packages developed at the University of Oslo for brain and cognition research.
+Most packages are maintained by Athanasia Mowinckel.
+It consists of 14 packages, one of which is also on CRAN.
+
+---
+class: fullpage
+
+# Example: the ggseg universe
+
+![ggseg-builds2](images/ggseg-builds0.png)
+
+???
+
+So again, the owner if this universe is the ggseg organization on GitHub, hence the URL for the universe is ggseg.r-universe.dev.
+
+The dashboard also shows some information about this organization, that is taken from the GitHub profile.
+
+---
+class: fullpage
+
+# Example: the ggseg universe
+
+![ggseg-builds2](images/ggseg-builds1.png)
+
+???
+
+In the dashboard of a universe you will see these tabs that you can use to browse the content. 
+
+This may change a bit in the future as we add more functionality to the platform.
+
+
+---
+class: inverse, center, middle
+
+# Browsing R packages in a universe
+
+???
+
+Let's first look at the most important thing: the packages.
+
+
+---
+
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-builds3](images/ggseg-builds3.png)
+
+???
+
+The _builds_ tab shows an overview of recently updated packages, including the version and the maintainer, and the date of the most recent commit.
+
+It also shows this green badge, when the package is available from CRAN.
+
+And in the top it shows example code on how to install a package from this universe in R. So users can easily copy paste that.
+
+
+
+---
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-builds4](images/ggseg-builds4.png)
+
+???
+
+And then this column shows if binary packages are available for Windows and MacOS, which is the case for all packages.
+
+If the icon is gray, it means that there was some warning or error running R CMD check, but the binary package is still available.
+
+If there is no binary package you would see a red cross icon.
+
+---
+# Example: the ggseg universe (packages)
+
+### Users install simply using `install.packages`.
+
+```r
+# Enable this universe
+options(repos = c(
+    ggseg = 'https://ggseg.r-universe.dev',
+    CRAN = 'https://cloud.r-project.org'))
+
+# Install some packages
+install.packages('ggseg3d')
+```
+
+???
+
+As said, the top of the page showed example code of how a user would install a package form this universe.
+
+The easiest way is setting the `repos` option in R as shown above.
+
+So we also specify CRAN as the second repository, which may be needed for dependencies of this package.
+
+With this code, the dependencies of the package that are available from the ggseg universe are taken from there, and the remaining dependencies are installed from CRAN.
+
+
+--
+
+## No `remotes` / `devtools`/ `rtools` required !!
+
+???
+
+Note that all of this is done using the base R package manager, exactly as when you install from CRAN. On Windows and MacOS, the user does not need any complicated tools and libraries to build packages from source.
+
+---
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-packages0](images/ggseg-packages0.png)
+
+???
+
+Let's go to the second tab in the dashboard, called packages.
+
+---
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-packages](images/ggseg-packages.png)
+
+???
+
+This shows a more detailed information about packages, mostly taken from the package description files.
+
+---
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-packages2](images/ggseg-packages1.png)
+
+???
+
+So it shows the title and description, the maintainer, and again when the package was last updated...
+
+---
+class: fullpage
+
+# Example: the ggseg universe (packages)
+
+![ggseg-packages1](images/ggseg-packages2.png)
+
+???
+
+And if the package has a logo, this is also shown in the dashboard.
+There are a few standard ways that you can specify a logo for your package, we use the same rules as pkgdown, to find the logo.
+
+You can get much more detailed information though the APIs.
+
+
+---
+class: inverse, center, middle
+
+# Browsing articles in a universe
+
+???
+
+Alright, lets talk about articles.
+
+Besides packages, R-universe is intended a place for publishing articles.
+
+---
+class: fullpage
+
+# Example: the ggseg universe (articles)
+
+![ggseg-articles0](images/ggseg-articles0.png)
+
+
+???
+
+You can see all the articles from a given user or organization under the articles tab.
+
+---
+class: fullpage
+
+# Example: the ggseg universe  (articles)
+
+![ggseg-articles1](images/ggseg-articles1.png)
+
+???
+
+Articles get automatically rendered on our build system using the vignette system in R.
+
+However, articles don't have to be limited to software documentation.
+
+As I will explain later, you can publish any Rmarkdown article in your universe. For example a research paper or tutorial, or homework assignment.
+
+
+---
+class: fullpage
+
+# Example: the ggseg universe  (articles)
+
+![ggseg-article](images/ggseg-article.png)
+
+???
+
+You can easily browse these articles within the dashboard.
+
+The content of these articles is taken from vignettes, rendered with in a consistent html theme,
+that is the same across the system. 
+
+So hopefully this makes it more pleasant to browse and read different articles.
+
+
+
+---
+class: fullpage
+
+# Example: the ggseg universe (articles)
+
+![ggseg-article1](images/ggseg-article1.png)
+
+
+???
+
+So you can browse these articles from within the dashboard, but the top of the article
+also shows the direct links to the input rmarkdown file and output html file.
+
+So you can also link to the html document directly.
+
+---
+class: inverse, center, middle
+
+# API access to all the data !
+
+???
+
+An important feature of R-universe is that we provide programmatic access to all 
+the content and metadata.
+
+---
+class: fullpage
+
+# Example: the ggseg universe  (APIs)
+
+![ggseg-api0](images/ggseg-api0.png)
+
+???
+
+An important part of open science is that content is not locked in to some platform, but accessible in other ways.
+
+All of the data from the dashboard, and much more information about the packages and articles
+can be retrieved though APIs.
+
+The API tab shows some documentation from the most important endpoints.
+
+
+---
+class: fullpage
+
+# Example: the ggseg universe (APIs)
+
+![ggseg-api0](images/ggseg-api2.png)
+
+???
+
+That looks like this. The APIs are still under development but you can play around with it. 
+
+
+---
+class: fullpage
+
+# Example: the ggseg universe  (APIs)
+
+![ggseg-json](images/ggseg-json.png)
+
+???
+
+For example the `/packages` endpoint gives all the artifacts and information from the database about a given version of a given package.
+
+So in this example it returns all the data about ggseg. Which is a json list, where each entry is a package file. So in this case there will probably be 5 entries: one source package, two windows binaries and two macos binaries.
+
+
+---
+# Example: the ggseg universe  (APIs)
+
+Use `jsonlite` to read data in R:
+
+```r
+library(jsonlite)
+ggseg <- fromJSON('https://ggseg.r-universe.dev/packages/ggseg/1.6.3')
+```
+
+Aggregate data uses ndjson so you need `jsonlite::stream_in()`:
+
+```r
+library(jsonlite)
+
+# All package description data
+descriptions <- stream_in(url('https://ggseg.r-universe.dev/stats/descriptions'))
+
+# All articles
+vignettes <- stream_in(url('https://ggseg.r-universe.dev/stats/vignettes'))
+
+# Check runs
+checks <- stream_in(url('https://ggseg.r-universe.dev/stats/checks'))
+```
+
+???
+
+And of course you can read all of this in R. I'll leave it up to you to try and run this code.
+
+Once thing to note is that many endpoints in R-universe use ndjson format, which is a streaming version of json. And therefore you need to use `stream_in` if you want to read with jsonlite.
+
+Or an equivalent function to read ndjson from your favorite json library.
+
+---
+class: inverse, center, middle
+
+# For who is R universe intended?
+
+???
+
+Alright so that was a brief tour of what we currently have.
+
+Let's take a step back.
+
+Why are we building this? Who can use this?
+
+---
+# For who is R universe intended?
+
+## Anyone can start a universe !
+
+Example use cases
+
+ - Both for personal and organizations. 
+ - Packages do NOT need to be on CRAN. In your universe you make the rules!
+ - Experimental projects
+ - Research compendia packages
+ - Homework assignments
+ - Dev versions of CRAN packages
+ 
+Package git repos do not need to be in the same GitHub user/org as the universe. You can even add packages from Gitlab or another Git server. You only need the GitHub username for the universe itself.
+
+???
+
+We think there are many different use cases of an R publishing space for your personal work or your organization or research group.
+
+
+Yes, the system is built around the concept of R packages as the container format,
+but certainly not only professional R package developers.
+
+In your universe, you can publish whatever you want. There is no policy or policing what is allowed or not.
+
+So sure, you can use it to publish the dev versions of CRAN packages.
+But you can also think about more experimental projects, research material, even homework assignments.
+
+---
+class: inverse, center, middle
+
+# Example use-cases for R-universe
+
+???
+
+So let's have a look at some examples of user and organizations that are currently using the systsem.
+
+---
+class: fullpage
+
+# Personal package portfolio
+
+![mohammed](images/mohammed.png)
+
+???
+
+You can use your universe as your personal package portfolio. 
+
+Suppose you have written a bunch of packages, some of which may be on CRAN, or various places on Git.
+
+You can set up a universe to showcase your work, show all the things you are working on.
+
+
+
+---
+class: fullpage
+
+# Research software publishing
+
+![mrc](images/mrc.png)
+
+???
+
+Another use case is to use your universe as an outlet for your research group.
+
+Here is an example of a research group based at the Imperial College London.
+They develop a suite of pacakges, mostly maintained by Rich FitzJohn.
+
+These packages may not be suitable for CRAN, or it is just too much pain to release it all to CRAN. So they just publish the source code on GitHub.
+
+By creating a universe, they can increases the exposure of their work, make software more accessible and discoverable for users, rather than when it is only available in source somewhere on GitHub.
+
+---
+class: fullpage
+
+# Curated suite of packages
+
+![ropensci](images/ropensci.png)
+
+???
+
+Another use case is for software curation.
+
+The rOpenSci organization maintains a large suite of peer-reviewed and staff maintained R packages, for which we try to keep up to standard for use by scientific research.
+
+This was of course where the idea of R-universe originates from.
+
+So though the rOpenSci universe, it becomes easy for users to see which packages are available, and install them.
+
+But it also helps as a monitoring tool for us, to keep an eye on development activity. And spot packages that are failing tests or do not seemed to be actively maintained anymore.
+
+
+---
+class: fullpage
+
+# Dev versions for CRAN packages
+
+![rlib](images/rlib.png)
+
+???
+
+Another use case is to publish the dev-versions of CRAN packages.
+
+Sometimes users want to test a version of a package that is not yet on CRAN, to test some new feature or bugfix.
+
+But installing the packages from source can be quite painful, because many of these packages contain C++ code, or require some system libraries, and so on.
+
+So in the r-lib universe you can install the latest dev version of these packages, just like as you would from CRAN. Including prebuilt binaries for Windows and MacOs.
+
+
+---
+class: fullpage
+
+# Domain specific suite of packages
+
+![rspatial](images/rspatial.png)
+
+???
+
+Finally another example is for organizations that develop an inter-dependent set of R packages from a given domain, such as the r-spatial organization.
+
+Though their universe you can quickly see what they are currently working on, try the latest versions of the packages.
+
+And a benefit for the developers is that the packages automatically get built and tested against the dev versions of the other packages in this universe.
+
+So if one package makes a change that ends up breaking other packages, it becomes quickly apparent. Without having to do a manual revdep-check.
+
+
+
+---
+class: fullpage
+
+# And many more !
+
+![listuniverses](images/listuniverses.png)
+
+???
+
+There are many other examples, we have about 300 universes right now.
+Browse the webpage for more examples.
+
+
+---
+class: inverse, center, middle
+
+# Non-software packages ?
+
+???
+
+These are mostly existing uses,
+but one thing I am personally most excited about is another use case.
+
+
+---
+class: compendium
+
+# R packages as a research container format
+
+![compendium](images/compendium.png)
+
+R-universe is also suitable for publishing non-software research material.
+
+For example packages containing only:
+
+ - A vignette to create a live, reproducible paper
+ - Research compendium with supporting material for scientific publication
+ - A set of tutorials
+ - Code + writeup for homework assignment
+ - One or more datasets
+ - You make the rules!
+ 
+Any R-based content can fit in a package.
+
+.footnote[
+<small>*Image source: _Packaging Data Analytical Work Reproducibly Using R (and Friends)_ <br>
+Ben Marwick, Carl Boettiger & Lincoln Mullen, in "The American Statistician", 2018.</small>
+]
+
+???
+
+
+We are used to think of R packages mostly for sharing reusable software.
+
+But many people have argued that a package is actually a generic container for research material.
+
+R packages provide a standard format for bundling some code, data, articles, and metadata to set the author, license, dependencies and so on.
+
+For example suppose you have a publication or homework assignment that consists of an Rmarkdown or sweave file, and then some supporting code and data. From here it is a small step to put that into a package, and publish that on your universe, and get an automatically live rendered version of that paper.
+
+My hope is that people can use R-universe, to publish R-based research material. And that we start seeing articles, based on vignettes, not just used for software documentation, but live reproducible research.
+
+---
+class: inverse, center, middle
+
+# Global feeds connect the universes
+
+???
+
+So far we mostly talked about what a single universe looks like.
+
+We would like visitors to be able to browse and discover content from universes.
+
+One way is through global feeds.
+
+---
+class: fullpage
+
+# Global feed: builds
+
+![globalbuilds](images/global-builds.png)
+
+???
+
+The homepage on r-universe.dev shows a global feed of all package commits across all universes. So that is fun to look at to see what people are working on.
+
+---
+class: fullpage
+
+# Global feed: articles
+
+![globalarticles](images/global-articles.png)
+
+???
+
+Similarly there is a global feed of all the articles, that have been recently created or updated.
+
+This is actually very cool to look at, I have discovered several cool new packages and features by looking at the feed of article updates.
+
+---
+class: fullpage
+
+# Global feed: maintainers
+
+![globalmaintainers](images/global-maintainers.png)
+
+???
+
+The homepage also shows a maintainer view.
+
+So this is an aggregate across all universe, grouped by the maintainer.
+
+---
+class: fullpage
+
+# Global feed: maintainers
+
+![maintainerinfo](images/maintainer-info.png)
+
+Many maintainers are active in multiple organizations. So if you hover over their name you can see which universes contain packages that are maintained by this person.
+
+---
+class: inverse, center, middle
+
+# How to setup your own universe
+
+???
+
+By now you may be curious: how do I set up my own universe?
+
+---
+class: fullpage
+
+# Technote: get started with r-universe
+
+![commitstatus](images/setupblog.png)
+
+???
+
+I will briefly show how it works, but the best reference to this is a technote that I wrote recently on the ropensci blog.
+Which you can checkout on ropensci.org.
+
+
+---
+# Step 1: create your registry
+
+Create a repository called `universe` on your GitHub account. Add a file called `packages.json` listing the names and git URLs of the R packages you want to include:
+
+```json
+[
+    {
+        "package": "goodpress",
+        "url": "https://github.com/maelle/goodpress"
+    },
+    {
+        "package": "cransays",
+        "url": "https://github.com/lockedata/cransays"
+    },
+    {
+        "package": "rodev",
+        "url": "https://github.com/ropenscilabs/rodev",
+        "branch" : "master"
+    }
+]
+```
+
+Example: https://github.com/maelle/universe. Start by adding no more than a few packages, you can add more later. The `branch` field is optional, omit to track the default branch.
+
+???
+
+Basically all we need from you is a registry file called packages.json. 
+This file lists all the packages you wan tto include, and their git url where we can find that package.
+
+---
+class: fullpage
+
+# Step 1: create your registry
+
+![maelle](images/maelle.png)
+
+???
+
+So you need to publish this file in a repository called `universe` in the github user or organization for which you want to create the universe.
+
+---
+class: fullpage
+
+# Step 2: install the GitHub app
+
+![setup](images/setup.png)
+
+???
+
+And then the final step is to activate it by installing the GitHub app on your account.
+
+
+---
+class: fullpage
+
+# Step 2: install the GitHub app
+
+![installapp](images/installapp.png)
+
+???
+
+The app needs very few permissions.
+It only asks for writing "commit status" which allows the system to post the green checkmark behind the commit in your package repo, as we will see in a second.
+
+
+
+---
+class: fullpage
+
+# Your universe monorepo
+
+![monorepo](images/monorepo.png)
+
+???
+
+What happens next is that the system automatically creates a monorepo for you under the `r-universe` organization on GitHub.
+
+The monorepo is a git repository in which each of your packages is a submodule. And it is basically the canonical source for your universe.
+
+This process is extensively described in another technote on our blog.
+
+---
+class: fullpage
+
+# Your universe monorepo
+
+![actions](images/actions.png)
+
+???
+
+The 'actions' tab of your monorepo is where all the building happens. So you can have a look there if you are curious how all this works.
+
+
+---
+class: fullpage
+
+# Now just wait...
+
+![maelledash](images/maelledash.png)
+
+???
+
+And then after a while, usually no more than an hour, 
+
+packages that have completed building start appearing on your dashboard.
+
+---
+class: fullpage
+
+# Show commit status (if permitted)
+
+![commitstatus](images/commitstatus.png)
+
+
+???
+
+For packages that were succesfully deployed on r-universe,
+the system posts a commit-status update to the upstream R package repository.
+
+---
+class: inverse, center, middle
+
+# Future plans: integrated health and impact metrics
+
+???
+
+This is the current state. We have just started, and want to build this out. 
+
+We have many ideas of features we want to add. 
+
+One thing we are currently working on is integrating various
+metrics about packages that may be indicators about the quality and health and impact of
+research software projects.
+
+---
+class: fullpage
+
+# Health monitoring: motivation
+
+![rstudio-talk](images/rstudio-talk.png)
+
+???
+
+To learn more about the motvation behind this, you can watch the recording from my talk at
+rstudio-conf from earlier this year. The talk is also linked on our homepage.
+
+In the talk I try to explain why we believe it is important for
+organizations and potential users of software to get a sense of the health
+and the quality of the software that they want to build on.
+
+
+---
+class: fullpage
+
+# Software Metrics
+
+![venn](images/venn.png)
+
+???
+
+I talked a bit about various types of indicators that you could look at in an open source project,
+where I distinguished technical, social, and scientific indicators. 
+
+We want to integrate these sorts of indicators with r-universe, so that the dashboard or API 
+reveals information if a project is still active, and how it is maintained, and if it is used by other researchers, and so on.
+
+
+
+---
+class: fullpage
+
+# Technical metrics
+
+![revdeps](images/revdeps.png)
+
+???
+
+For example we want to integrate some technical metrics about packages, such as statistics about 
+downloads and commit activity and reverse dependencies, and so on.
+
+
+
+---
+class: fullpage
+
+# Finding software citations
+
+![citations-example](images/citations-example.png)
+
+???
+
+But a much more challenging and important aspect of this project is to find uses and citations of software in scientific code and publications.
+
+We think this is very important for research software.
+
+For this we are collaborating with a team to build ML models to recognize software mentions in literature.
+
+Now running experiments to look at citations from a large corpus 20-30 million OA articles and extract citations automatically, especially for software we have not seen before.
+
+We hope to announce some interesting progress in this area later this year.
+
+---
+# Conclusion
+
+What is R-universe and why is it useful?
+
+ - R-universe is an open platform that provides users and organizations with a personal space for publishing R content
+ - The system automatically tracks your git repos, builds and distributes binary versions of your packages for Mac and Windows.
+ - Users can easily install packages from your personal CRAN-like repository, without complex configuration of compile tools and dependencies
+ - The dashboard showcases a collection of R packages and vignette content, even when spread across multiple GitHub organizations
+ - R-universe can be used as a simple zero-configuration CI/CD system, running the standard checks on the most important platforms.
+ - R-universe is very easy to set up! We have dealt with lots of challenges related to dependencies, platforms, etc., for you. You can have a universe with just a few clicks.
+ - R-universe combines the best features of hosting your packages on GitHub and CRAN, without being exclusive to either.
+ - Anyone, from novice R user to veteran package developer, can setup their own universe.
+
+---
+class: fullpage
+
+# More information
+
+![homepage](images/runiverse-homepage.png)
+
+---
+class: fullpage
+
+# More information: ropensci.org
+
+![homepage-build](images/homepage-build.png)
+
+---
+class: fullpage
+
+# More information: ropensci.org
+
+![homepage-articles](images/homepage-articles.png)
+
+---
+class: fullpage
+
+# More information: ropensci.org
+
+![homepage-setup](images/setupblog.png)
+
+
